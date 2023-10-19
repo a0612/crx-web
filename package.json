@@ -6,9 +6,18 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "antd": "^5.10.1",
+    "lib-flexible": "^0.3.2",
+    "postcss": "^8.4.31",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-loader": "^7.3.3",
+    "postcss-preset-env": "^9.2.0",
+    "postcss-px2rem-exclude": "^0.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.17.0",
     "react-scripts": "5.0.1",
+    "sass": "^1.69.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

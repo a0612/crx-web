@@ -1,0 +1,11 @@
+.page-home{
+  display: flex;
+  .page-left{
+    
+  }
+  .page-right{
+    flex-shrink: 0;
+    width: 400px;
+    height: 100vh;
+  }
+}
