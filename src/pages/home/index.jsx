@@ -1,25 +1,35 @@
-import { useEffect, useState } from 'react'
+// import { useEffect, useState } from 'react'
 import './index.scss'
 import ImgIcon from '../../assets/img/vision.png'
 import Logo from '../../assets/img/logo.png'
 import TwitterIcon from '../../assets/img/x.png'
 import Step2Img from '../../assets/img/step2.png'
 import Step3Img from '../../assets/img/step3.png'
+// /*global chrome*/
 
 function Home() {
   // const [logged, setLogged] = useState(false)
   // const [pageData, setPageData] = useState({})
-  useEffect(() => {
+  // useEffect(() => {
     
-  }, [])
+  // }, [])
+
+  const handleAgree = () => {
+    window.postMessage(
+      {
+        type: 'requestPermission',
+      },
+      '*',
+    )
+  }
 
   return <div className="page-home">
     <div className="page-left">
       <div className="header">
         <img src={Logo} alt="" className="logo-img" />
-        <div className="header-title">
+        {/* <div className="header-title">
           Earn in a growing social network.
-        </div>
+        </div> */}
       </div>
       <div className="block-container">
         <div className="container-title">
@@ -37,8 +47,8 @@ function Home() {
               <div className="twitter-text">Twitter</div>
             </div>
             <div className="both-betw-item">
-              <div className="button-item">Cancel</div>
-              <div className="button-item green">Agree</div>
+              {/* <div className="button-item can-click">Cancel</div> */}
+              <div className="button-item green can-click" id="grant-permission" onClick={handleAgree}>Agree</div>
             </div>
           </div>
         </div>

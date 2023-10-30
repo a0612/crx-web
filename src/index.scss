@@ -1,13 +1,28 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+
+$design_width_pc: 1440;
+
+// 调整font-size, 按照1rem = 100px计算
+html {
+  margin: 0 auto;
+  font-size: calc(100vw / $design_width_pc * 100);
+}
+
+html,
+body,
+#root {
+  height: auto !important;
+  width: 100%;
+  margin: 0 auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+* {
+  box-sizing: border-box;
+}
+
+.can-click {
+  &:hover {
+    cursor: pointer;
+  }
 }

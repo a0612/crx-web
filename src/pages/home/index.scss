@@ -1,11 +1,108 @@
 .page-home{
   display: flex;
   .page-left{
-    
+    padding: 0 64px;
+    flex: 1;
+    .header{
+      display: flex;
+      justify-content: center;
+      margin: 60px auto 90px;
+      .logo-img {
+        width: 337px;
+        height: 60px;
+      }
+    }
+    .container-title{
+      color: #000;
+      font-family: Inter;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+    }
+    .container-box{
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(17, 36, 56, 0.08);
+      background: #F6F9FC;
+      margin: 24px 0;
+    }
+    .step-font{
+      span{
+        color: #000;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px; 
+      }
+      color: rgba(0, 0, 0, 0.60);
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+    }
+    .both-betw-box{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      .both-betw-item{
+        display: flex;
+        align-items: center;
+        .twitter-icon{
+          display: flex;
+          border-radius: 50%;
+          overflow: hidden;
+          width: 32px;
+          height: 32px;
+          img{
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .twitter-text{
+          color: #000;
+          text-align: center;
+          font-family: Inter;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+          margin-left: 6px;
+        }
+        .button-item{
+          width: 78px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 16px;
+          border: 1px solid #34D026;
+          color: #34D026;
+          text-align: center;
+          font-family: Inter;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+          margin: 0 5px;
+          &.green{
+            background-color: #34D026;
+            color: #fff;
+          }
+        }
+      }
+    }
   }
   .page-right{
     flex-shrink: 0;
-    width: 400px;
-    height: 100vh;
+    width: 600px;
+    height: 900px;
+    img{
+      width: 100%;
+      height: 100%;
+    }
   }
 }
