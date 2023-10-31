@@ -253,10 +253,14 @@
         font-size: 16px;
         font-weight: 500;
         .result-icon{
-          background-color: #ccc;
           width: 27px;
           height: 27px;
           margin-right: 12px;
+          display: flex;
+          align-items: center;
+          img{
+            width: 100%;
+          }
         }
       }
     }
@@ -586,6 +590,71 @@
   .form-desc{
     >div{
       width: 100%;
+    }
+  }
+  .step-2-twitter{
+    width: 42px;
+    height: 42px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    .icon-close-btn{
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      right: 6px;
+      top: 0;
+    }
+  }
+}
+.modal-container{
+  text-align: center;
+  .modal-title{
+    color: #112438;
+    text-align: center;
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px; /* 120% */
+    margin-bottom: 24px;
+  }
+  .modal-desc{
+    width: 271px;
+    margin: 24px auto 30px;
+    color: #112438;
+    text-align: center;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 150% */
+  }
+  .modal-btns{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .modal-btn-item{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 160px;
+      height: 48px;
+      border-radius: 6px;
+      border: 1px solid rgba(17, 36, 56, 0.08);
+      color: #112438;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      &.color-red{
+        margin-left: 16px;
+        background: #F11F29;
+        border: 1px solid #F11F29;
+        color: #fff;
+      }
     }
   }
 }

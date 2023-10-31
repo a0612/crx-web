@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import './index.scss'
 import Logo from '../../assets/img/logo.png'
-import TwitterIcon from '../../assets/img/x.png'
-import { Form, Input, Select, Switch, message, Upload } from 'antd';
+import duiIcon from '../../assets/img/dui.png'
+import { Form, Input, Select, Switch, message, Upload, Modal } from 'antd';
 import defaultIcon from "@/assets/img/default-icon.svg";
 import plus from "@/assets/img/plus.svg"
 import Tag from "./components/Tag";
@@ -192,7 +192,7 @@ const getDays = (year, Month) => {
 
 function Home() {
   dataPicker.init()
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(3)
   const [currentYear, setCurrentYear] = useState(dataPicker.today.getFullYear())
   const [currentMonth, setCurrentMonth] = useState('September')
   const [currentDay, setCurrentDay] = useState(24)
@@ -218,6 +218,9 @@ function Home() {
   const [userIconLoadingFlag, setUserIconLoadingFlag] = useState(true);
   const [imgsList, setImgsList] = useState([defaultIcon]);
   const [imageUrl, setImageUrl] = useState('');
+
+  const [twitterIconActive, setTwitterIconActive] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const history = useHistory();
   const location = useLocation();
@@ -622,6 +625,26 @@ function Home() {
     setUInfo(infoFlag)
   }
 
+  useEffect(() => {
+    if (uInfo.icon) {
+      setUserIconLoadingFlag(true);
+      let image = new Image();
+      image.src = uInfo.icon;
+      image.onload = function () {
+        setUserIconLoadingFlag(false);
+      }
+    }
+  }, [uInfo.icon])
+
+  const handleChangeTwitterIconActive = () => {
+    setModalVisible(true)
+  }
+
+  const handleChangeIconActive = (state) => {
+    setTwitterIconActive(state)
+    setModalVisible(false)
+  }
+
   return <div className="page-edit">
     <div className="page-edit-header">
       <div className="crx-logo">
@@ -705,7 +728,6 @@ function Home() {
                                                       let tempUinfo = { ...uInfo }
                                                       tempUinfo.icon = item
                                                       setUInfo(tempUinfo)
-                                                      userInfoCheck(uInfo.sex)
                                                       setFloatOptions(false)
                                                       setIconMask(false)
                                                   }}
@@ -720,10 +742,16 @@ function Home() {
                               <div className='upload-icon' >
                                 <Upload
                                   accept="image/*"
-                                  action="/app/file/upload"w
+                                  action="/app/file/upload"
                                   name="avatar"
                                   className="avatar-uploader"
                                   showUploadList={false}
+                                  headers={
+                                    {
+                                      'Content-Type': 'multipart/form-data',
+                                      'token': Cookies.get('token')
+                                    }
+                                  }
                                   onChange={handleChange}
                                 >
                                   {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
@@ -844,7 +872,6 @@ function Home() {
                     <Input defaultValue={uInfo.location} onChange={e => handleInputChange(e, 'location')}/>
                   </div>
                 </div>
-
                 <div className="tip-text">
                   Expertise
                 </div>
@@ -956,11 +983,26 @@ function Home() {
             </div>
             <div className="step-2-icons">
               <div className="step-2-twitter">
-
+                {
+                  twitterIconActive ? <>
+                    <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect y="2" width="40" height="40" rx="20" fill="black"/>
+                      <path d="M13.375 31.5H10L26.625 12.5H30L13.375 31.5Z" fill="white"/>
+                      <path d="M24.7403 30.75L11.0397 13.25H15.2597L28.9603 30.75H24.7403Z" fill="black" stroke="white" stroke-width="1.5"/>
+                      <circle cx="34" cy="8" r="8" fill="#FF4040"/>
+                      <rect x="38.9365" y="7.20048" width="1.62073" height="9.72438" transform="rotate(90 38.9365 7.20048)" fill="white"/>
+                    </svg>
+                    <div className="icon-close-btn can-click" onClick={handleChangeTwitterIconActive}></div>
+                  </> : <svg className='can-click' width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => handleChangeIconActive(true)}>
+                  <rect width="40" height="40" rx="20" fill="#A0A7AF"/>
+                  <path d="M13.375 29.5H10L26.625 10.5H30L13.375 29.5Z" fill="white"/>
+                  <path d="M24.7403 28.75L11.0397 11.25H15.2597L28.9603 28.75H24.7403Z" fill="#A0A7AF" stroke="white" stroke-width="1.5"/>
+                  </svg>
+                }
               </div>
             </div>
             <div className="switch-container">
-              <Switch defaultChecked className='green-switch'/>
+              <Switch defaultChecked className='green-switch' />
             </div>
           </div> : 
           <div className='step-3-container'>
@@ -973,7 +1015,9 @@ function Home() {
               </div>
             </div>
             <div className="finish-result">
-              <div className="result-icon"></div>
+              <div className="result-icon">
+                <img src={duiIcon} alt="" />
+              </div>
               Your social avatar has successfully gone live
             </div>
           </div>
@@ -983,10 +1027,28 @@ function Home() {
     <div className="page-footer">
       <div className="foot-btns">
         { step < 3 && <div className="can-click button-item green" onClick={() => handleClick(1)}>Next</div> }
-        <div className="can-click button-item">Close</div>
+        {/* <div className="can-click button-item">Close</div> */}
         {step > 1 && <div className="can-click button-item" onClick={() => handleClick(-1)}>Back</div>}
       </div>
     </div>
+    <Modal open={modalVisible} footer={null} onCancel={() => {setModalVisible(false)}}>
+      <div className="modal-container">
+        <div className="modal-title">
+          Discard changes?
+        </div>
+        <div className="modal-desc">
+          Do you want to disconnect your Twitter account?
+        </div>
+        <div className="modal-btns">
+          <div className="modal-btn-item can-click" onClick={() => {setModalVisible(false)}}>
+            Cancel
+          </div>
+          <div className="modal-btn-item color-red can-click" onClick={() => handleChangeIconActive(false)}>
+            Disconnect
+          </div>
+        </div>
+      </div>
+    </Modal>
   </div>
 }
 
