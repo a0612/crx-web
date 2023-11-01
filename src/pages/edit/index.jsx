@@ -192,7 +192,7 @@ const getDays = (year, Month) => {
 
 function Home() {
   dataPicker.init()
-  const [step, setStep] = useState(3)
+  const [step, setStep] = useState(1)
   const [currentYear, setCurrentYear] = useState(dataPicker.today.getFullYear())
   const [currentMonth, setCurrentMonth] = useState('September')
   const [currentDay, setCurrentDay] = useState(24)
@@ -251,7 +251,8 @@ function Home() {
     location: '',
     name: '',
     nick_name: '',
-    sex: 0,
+    sex: '',
+    allow_data_for_training: true
   })
   const [curUInfo, setCurUInfo] = useState({
     icon: '',
@@ -269,9 +270,11 @@ function Home() {
     if (flag > 0) {
       switch (step) {
         case 1:
+          setStep(2)
+          break;
+        case 2:
           updateInfo()
           break;
-      
         default:
           break;
       }
@@ -280,7 +283,7 @@ function Home() {
     }
   }
   const updateInfo = async () => {
-    const res = await API.setUserInfo({...uInfo})
+    const res = await API.createBot({...uInfo})
     const {code, data} = res.data
     if (code === 200) {
       console.log('修改成功 === ', data)
@@ -312,7 +315,7 @@ function Home() {
         setInterestsTags(arr)
       }
       setUInfo({
-        ...data
+        ...data,
       })
       setCurUInfo({
         icon: data.icon,
@@ -645,6 +648,16 @@ function Home() {
     setModalVisible(false)
   }
 
+  const getBot = async () => {
+    const res = await API.getBot({})
+    const {code, data} = res.data
+    if (code === 200) {
+      console.log('获取机器人信息 === ', data)
+    } else {
+      console.error('获取 === ', data)
+    }
+  }
+
   return <div className="page-edit">
     <div className="page-edit-header">
       <div className="crx-logo">
@@ -785,7 +798,7 @@ function Home() {
                   </div>
                   <div className="form-desc">
                     <Select 
-                      defaultValue={uInfo.sex}
+                      defaultValue={uInfo.sex || ''}
                       options={[
                         { value: 1, label: 'Male' },
                         { value: 2, label: 'Female' },
@@ -1002,7 +1015,11 @@ function Home() {
               </div>
             </div>
             <div className="switch-container">
-              <Switch defaultChecked className='green-switch' />
+              <Switch checked={uInfo.allow_data_for_training} className='green-switch' onChange={(value) => {
+                let tempUinfo = { ...uInfo }
+                tempUinfo.allow_data_for_training = value
+                setUInfo({...tempUinfo})
+              }}/>
             </div>
           </div> : 
           <div className='step-3-container'>
@@ -1024,13 +1041,17 @@ function Home() {
         }
       </div>
     </div>
-    <div className="page-footer">
-      <div className="foot-btns">
-        { step < 3 && <div className="can-click button-item green" onClick={() => handleClick(1)}>Next</div> }
-        {/* <div className="can-click button-item">Close</div> */}
-        {step > 1 && <div className="can-click button-item" onClick={() => handleClick(-1)}>Back</div>}
-      </div>
-    </div>
+    {
+      step !== 3 && (
+        <div className="page-footer">
+          <div className="foot-btns">
+            { step < 3 && <div className="can-click button-item green" onClick={() => handleClick(1)}>Next</div> }
+            {/* <div className="can-click button-item">Close</div> */}
+            {step > 1 && <div className="can-click button-item" onClick={() => handleClick(-1)}>Back</div>}
+          </div>
+        </div>
+      )
+    }
     <Modal open={modalVisible} footer={null} onCancel={() => {setModalVisible(false)}}>
       <div className="modal-container">
         <div className="modal-title">
