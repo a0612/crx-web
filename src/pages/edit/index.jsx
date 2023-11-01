@@ -283,12 +283,38 @@ function Home() {
     }
   }
   const updateInfo = async () => {
-    const res = await API.createBot({...uInfo})
+    const res = await API.createBot({
+      allow_data_for_training: uInfo.allow_data_for_training,
+      birthday: uInfo.birthday,
+      expertises: uInfo.expertises,
+      icon: uInfo.icon,
+      interests: uInfo.interests,
+      intro: uInfo.intro,
+      location: uInfo.location,
+      name: uInfo.nick_name,
+      self_introduction: uInfo.self_introduction,
+      sex: uInfo.sex
+    })
     const {code, data} = res.data
     if (code === 200) {
-      console.log('修改成功 === ', data)
+      console.log('创建成功 === ', data)
+      // 跳转到finish步骤
+      finishHandle()
     } else {
-      console.error('修改失败 === ', data)
+      console.error('创建失败 === ', data)
+    }
+  }
+
+  const finishHandle = async () => {
+    const res = await API.getBot({})
+    const {code, data} = res.data
+    if (code === 200) {
+      console.log('拿到创建成功的机器人信息 === ', data)
+      // 跳转到finish步骤
+      setStep(3)
+      // todo 展示finish机器人信息
+    } else {
+      console.error('创建失败 === ', data)
     }
   }
 
@@ -657,6 +683,22 @@ function Home() {
       console.error('获取 === ', data)
     }
   }
+  
+  const platformBind = async (action) => {
+    const res = await API.platformBind({
+      is_delete: action,
+      platform: 1,  // 推特1，ins:2
+      // token: string, // token应该在header会自带，参数是否还需要
+      // verify: string // 这个是什么
+    })
+    const {code, data} = res.data
+    if (code === 200) {
+      console.log('获取机器人信息 === ', data)
+      // todo,解绑成功,更新绑定状态icon
+    } else {
+      console.error('获取 === ', data)
+    }
+  }
 
   return <div className="page-edit">
     <div className="page-edit-header">
@@ -1001,15 +1043,15 @@ function Home() {
                     <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <rect y="2" width="40" height="40" rx="20" fill="black"/>
                       <path d="M13.375 31.5H10L26.625 12.5H30L13.375 31.5Z" fill="white"/>
-                      <path d="M24.7403 30.75L11.0397 13.25H15.2597L28.9603 30.75H24.7403Z" fill="black" stroke="white" stroke-width="1.5"/>
+                      <path d="M24.7403 30.75L11.0397 13.25H15.2597L28.9603 30.75H24.7403Z" fill="black" stroke="white"/>
                       <circle cx="34" cy="8" r="8" fill="#FF4040"/>
                       <rect x="38.9365" y="7.20048" width="1.62073" height="9.72438" transform="rotate(90 38.9365 7.20048)" fill="white"/>
                     </svg>
                     <div className="icon-close-btn can-click" onClick={handleChangeTwitterIconActive}></div>
-                  </> : <svg className='can-click' width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => handleChangeIconActive(true)}>
+                  </> : <svg className='can-click' width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => platformBind(true)}>
                   <rect width="40" height="40" rx="20" fill="#A0A7AF"/>
                   <path d="M13.375 29.5H10L26.625 10.5H30L13.375 29.5Z" fill="white"/>
-                  <path d="M24.7403 28.75L11.0397 11.25H15.2597L28.9603 28.75H24.7403Z" fill="#A0A7AF" stroke="white" stroke-width="1.5"/>
+                  <path d="M24.7403 28.75L11.0397 11.25H15.2597L28.9603 28.75H24.7403Z" fill="#A0A7AF" stroke="white"/>
                   </svg>
                 }
               </div>
@@ -1064,7 +1106,7 @@ function Home() {
           <div className="modal-btn-item can-click" onClick={() => {setModalVisible(false)}}>
             Cancel
           </div>
-          <div className="modal-btn-item color-red can-click" onClick={() => handleChangeIconActive(false)}>
+          <div className="modal-btn-item color-red can-click" onClick={() => platformBind(false)}>
             Disconnect
           </div>
         </div>
