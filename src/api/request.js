@@ -10,9 +10,9 @@ const axiosRequest =
   (data = {}) => {
     const isNeedBody = ['post', 'put', 'patch'].find((m) => m === method.toLowerCase())
     const headers = requestConfig?.headers || {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-      'token': Cookies.get('token')
+      'Content-Type': 'application/json;charset=utf-8',
     }
+    headers.token = Cookies.get('token')
     //支持多种content-type 数据传输
     const isJsonContentType = !/application\/x-www-form-urlencoded/.test(headers['Content-Type'])
     const jsonContentTypeData = isJsonContentType ? { data } : { data: qs.stringify(data, { arrayFormat: 'repeat' }) }

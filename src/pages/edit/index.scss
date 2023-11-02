@@ -236,6 +236,9 @@
         border-radius: 50%;
         overflow: hidden;
         background-color: rgba(0,0,0,.3);
+        img{
+          width: 100%;
+        }
       }
       .finish-user-name{
         color: #000;

@@ -12,6 +12,8 @@ import { useHistory, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import API from "@/api";
 
+const curplatform = 1
+
 const stepList = [
   {
     step: 1,
@@ -219,8 +221,9 @@ function Home() {
   const [imgsList, setImgsList] = useState([defaultIcon]);
   const [imageUrl, setImageUrl] = useState('');
 
-  const [twitterIconActive, setTwitterIconActive] = useState(true);
+  const [twitterIconActive, setTwitterIconActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [finishData, setFinishData] = useState({});
 
   const history = useHistory();
   const location = useLocation();
@@ -233,8 +236,8 @@ function Home() {
       Cookies.set('token', token);
       history.replace('/edit');
     } else {
-      const token = Cookies.get('token');
-      console.log('token === ', token);
+      getLoginUrl()
+      finishHandle()
       getSelectData()
     }
   }, [location.search]);
@@ -259,8 +262,6 @@ function Home() {
     name: '',
     nick_name: '',
   })
-
-  const formRef = useRef(null);
 
   const handleClick = (flag) => {
     console.log('uInfo ==== ', uInfo)
@@ -310,9 +311,12 @@ function Home() {
     const {code, data} = res.data
     if (code === 200) {
       console.log('拿到创建成功的机器人信息 === ', data)
-      // 跳转到finish步骤
-      setStep(3)
-      // todo 展示finish机器人信息
+      if (data?.bot_id) {
+        setFinishData(data)
+        setStep(3)
+      } else {
+        setStep(1)
+      }
     } else {
       console.error('创建失败 === ', data)
     }
@@ -683,11 +687,29 @@ function Home() {
       console.error('获取 === ', data)
     }
   }
-  
-  const platformBind = async (action) => {
+  const getLoginUrl = async () => {
+    const res = await API.getLoginUrl({
+      platform: curplatform,
+      callback_page: 'profile'
+    })
+    const {code, data} = res.data
+    if (code === 200) {
+      console.log('第三方登录信息 === ', data)
+      if (!!data) {
+        setTwitterIconActive(true)
+      } else{ 
+        setTwitterIconActive(false)
+      }
+    } else {
+      console.error('第三方失败 === ', data)
+    }
+  }
+  // 解绑
+  const platformBind = async (action, params = {}) => {
     const res = await API.platformBind({
-      is_delete: action,
-      platform: 1,  // 推特1，ins:2
+      is_delete: !action, // 是否解绑
+      platform: curplatform,  // 推特1，ins:2
+      ...params,
       // token: string, // token应该在header会自带，参数是否还需要
       // verify: string // 这个是什么
     })
@@ -695,6 +717,7 @@ function Home() {
     if (code === 200) {
       console.log('获取机器人信息 === ', data)
       // todo,解绑成功,更新绑定状态icon
+      
     } else {
       console.error('获取 === ', data)
     }
@@ -1025,7 +1048,7 @@ function Home() {
                 Using the data you generated in Grown
               </div>
               <div className="step-tip-content">
-                The content and social behaviors you generate in Grown will help <span className='color-orange'>XXX(AI Name)</span> gradually master your skills.
+                The content and social behaviors you generate in Grown will help <span className='color-orange'>{uInfo.name}</span> gradually master your skills.
               </div>
             </div>
             <div className="tips-item">
@@ -1033,10 +1056,10 @@ function Home() {
                 Link your social media and authorize use
               </div>
               <div className="step-tip-content">
-                This will make <span className='color-orange'>XXX(AI Name)</span> more like you. About data privacy <span className='color-green'>Policy</span>
+                This will make <span className='color-orange'>{uInfo.name}</span> more like you. About data privacy <span className='color-green'>Policy</span>
               </div>
             </div>
-            <div className="step-2-icons">
+            <div style={{marginTop: '10px'}}>
               <div className="step-2-twitter">
                 {
                   twitterIconActive ? <>
@@ -1048,7 +1071,7 @@ function Home() {
                       <rect x="38.9365" y="7.20048" width="1.62073" height="9.72438" transform="rotate(90 38.9365 7.20048)" fill="white"/>
                     </svg>
                     <div className="icon-close-btn can-click" onClick={handleChangeTwitterIconActive}></div>
-                  </> : <svg className='can-click' width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => platformBind(true)}>
+                  </> : <svg className='can-click' width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={getLoginUrl}>
                   <rect width="40" height="40" rx="20" fill="#A0A7AF"/>
                   <path d="M13.375 29.5H10L26.625 10.5H30L13.375 29.5Z" fill="white"/>
                   <path d="M24.7403 28.75L11.0397 11.25H15.2597L28.9603 28.75H24.7403Z" fill="#A0A7AF" stroke="white"/>
@@ -1067,10 +1090,10 @@ function Home() {
           <div className='step-3-container'>
             <div className='finish-user-info'>
               <div className="finish-user-avatar">
-
+                <img src={finishData?.icon} alt="" />
               </div>
               <div className="finish-user-name">
-                Jaen Cooper
+                {finishData?.name}
               </div>
             </div>
             <div className="finish-result">
