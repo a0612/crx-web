@@ -412,6 +412,7 @@
     height: 48px;
   }
   .edit-user-icon {
+      overflow: hidden;
       user-select: none;
       height: 104px;
       width: 104px;
@@ -588,11 +589,26 @@
           margin-right: 5px;
         }
       }
+      .err-check-tip{
+        margin-left: 15px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        color: #FF4040;
+        font-family: Inter;
+        font-size: 14px;
+      }
     }
   }
   .form-desc{
     >div{
       width: 100%;
+    }
+    .red-border{
+      border-color: red;
+      >.ant-select-selector{
+        border-color: red;
+      }
     }
   }
   .step-2-twitter{

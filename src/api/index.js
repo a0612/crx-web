@@ -12,4 +12,5 @@ export default {
   getBot: request.POST(`/ai/getBot`), // 获取机器人信息
   platformBind: request.POST(`/platform/bind`), // 绑定/解绑第三方
   getLoginUrl: request.POST(`/platform/get_login_url`), // 获取第三方平台登录链接
+  getProfile: request.POST(`/profile`), 
 }

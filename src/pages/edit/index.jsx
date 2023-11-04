@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import './index.scss'
 import Logo from '../../assets/img/logo.png'
 import duiIcon from '../../assets/img/dui.png'
@@ -11,6 +11,7 @@ import ellipsis from "@/assets/img/ellipsis.svg";
 import { useHistory, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import API from "@/api";
+import axios from 'axios'
 
 const curplatform = 1
 
@@ -191,10 +192,10 @@ const getDays = (year, Month) => {
   return days
 }
 
-
 function Home() {
+
   dataPicker.init()
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(2)
   const [currentYear, setCurrentYear] = useState(dataPicker.today.getFullYear())
   const [currentMonth, setCurrentMonth] = useState('September')
   const [currentDay, setCurrentDay] = useState(24)
@@ -220,6 +221,7 @@ function Home() {
   const [userIconLoadingFlag, setUserIconLoadingFlag] = useState(true);
   const [imgsList, setImgsList] = useState([defaultIcon]);
   const [imageUrl, setImageUrl] = useState('');
+  const [clickFlag, setFlag] = useState(false);
 
   const [twitterIconActive, setTwitterIconActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -236,7 +238,7 @@ function Home() {
       Cookies.set('token', token);
       history.replace('/edit');
     } else {
-      getLoginUrl()
+      getProfileData()
       finishHandle()
       getSelectData()
     }
@@ -263,6 +265,23 @@ function Home() {
     nick_name: '',
   })
 
+  const errorCheck = useMemo(() => {
+    if (clickFlag) {
+      return {
+        nameError: !uInfo.nick_name,
+        sexError: !uInfo.sex,
+        bioError: !uInfo.intro,
+        selfError: !uInfo.self_introduction,
+      }
+    }
+    return {
+      nameError: false,
+      sexError: false,
+      bioError: false,
+      selfError: false,
+    }
+  }, [clickFlag, uInfo])
+
   const handleClick = (flag) => {
     console.log('uInfo ==== ', uInfo)
     console.log('expertiseTags ==== ', expertiseTags)
@@ -271,7 +290,10 @@ function Home() {
     if (flag > 0) {
       switch (step) {
         case 1:
-          setStep(2)
+          setFlag(true)
+          if (uInfo.nick_name && uInfo.sex && uInfo.intro && uInfo.self_introduction) {
+            setStep(2)
+          }
           break;
         case 2:
           updateInfo()
@@ -313,7 +335,7 @@ function Home() {
       console.log('拿到创建成功的机器人信息 === ', data)
       if (data?.bot_id) {
         setFinishData(data)
-        setStep(3)
+        // setStep(3)
       } else {
         setStep(1)
       }
@@ -344,6 +366,7 @@ function Home() {
         const arr = str.map(item => {return {label: item, value: item}})
         setInterestsTags(arr)
       }
+      setImageUrl(data.icon)
       setUInfo({
         ...data,
       })
@@ -687,15 +710,13 @@ function Home() {
       console.error('获取 === ', data)
     }
   }
-  const getLoginUrl = async () => {
-    const res = await API.getLoginUrl({
-      platform: curplatform,
-      callback_page: 'profile'
-    })
+  const getProfileData = async () => {
+    const res = await API.getProfile({})
     const {code, data} = res.data
     if (code === 200) {
       console.log('第三方登录信息 === ', data)
-      if (!!data) {
+      const { bind_platform = []} = data
+      if (bind_platform.includes(1)) {
         setTwitterIconActive(true)
       } else{ 
         setTwitterIconActive(false)
@@ -716,8 +737,53 @@ function Home() {
     const {code, data} = res.data
     if (code === 200) {
       console.log('获取机器人信息 === ', data)
-      // todo,解绑成功,更新绑定状态icon
-      
+      // 解绑成功,更新绑定状态icon
+      if (!action) {
+        setTwitterIconActive(false)
+        setModalVisible(false)
+      } else {
+        // 绑定成功
+
+      }
+    } else {
+      console.error('获取 === ', data)
+    }
+  }
+
+  const customRequest = ({ file, onSuccess, onError }) => {
+    // 在这里执行自定义上传逻辑，例如使用 Axios 或 Fetch 发送文件到服务器
+    // 当上传成功或失败后，分别调用 onSuccess 或 onError 函数
+    // 这里模拟一个上传成功
+    const formData = new FormData();
+    formData.append('file', file);
+    axios.post('https://pre.wwttxx2.online/app/file/upload', formData, {
+      headers: {
+        token: Cookies.get('token')
+      }
+    })
+      .then((response) => {
+        // 处理上传成功的情况
+        const { url } = response.data.data
+        setImageUrl(url)
+        const infoFlag = {
+          ...uInfo
+        }
+        infoFlag.icon = url
+        setUInfo(infoFlag)
+      })
+      .catch((error) => {
+        console.error(error)
+      });
+  };
+
+  const getLoginUrl = async () => {
+    const res = await API.getLoginUrl({
+      "callback_page": "profile",
+      "platform": 1
+    })
+    const {code, data} = res.data
+    if (code === 200) {
+      console.log('获取机器人信息 === ', data)
     } else {
       console.error('获取 === ', data)
     }
@@ -773,7 +839,26 @@ function Home() {
         {
           step === 1 ? (
             <div className="form-avatar-container">
-              <div className='edit-user-icon'
+              <div className='edit-user-icon can-click'>
+              {/* action="https://pre.wwttxx2.online/app/file/upload" */}
+                <Upload
+                  accept="image/*"
+                  customRequest={customRequest}
+                  name="avatar"
+                  className="avatar-uploader"
+                  showUploadList={false}
+                  headers={
+                    {
+                      'Content-Type': 'multipart/form-data',
+                      'token': Cookies.get('token')
+                    }
+                  }
+                  onChange={handleChange}
+                >
+                  {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                </Upload>
+              </div>
+              {/* <div className='edit-user-icon'
                 onMouseEnter={() => { setIconMask(true) }}
                 onMouseLeave={() => { setIconMask(floatOptions) }}
                 ref={userIconRef}
@@ -834,35 +919,28 @@ function Home() {
                                 >
                                   {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                                 </Upload>
-
-                                {/* <input accept="image/*"
-                                  action='https://pre.wwttxx2.online/app/file/upload'
-                                  onClick={(event) => { event.target.value = null }}
-                                  onChange={(e) => { imgUploadSuccess(e) }}
-                                  className='upload-file' 
-                                  type="file" 
-                                /> */}
                               </div>
                           </div>
                       </div>
                   }
-              </div>
+              </div> */}
 
                 <div className='my-form-item'>
                   <div className="form-title require">
-                    Name
+                    Name {errorCheck.nameError && <span className='err-check-tip'>Required information cannot be empty</span>}
                   </div>
                   <div className="form-desc">
-                    <Input value={uInfo.nick_name} onChange={e => handleInputChange(e, 'nick_name')} />
+                    <Input className={errorCheck.nameError && 'red-border'} value={uInfo.nick_name} onChange={e => handleInputChange(e, 'nick_name')} />
                   </div>
                 </div>
 
                 <div className='my-form-item'>
                   <div className="form-title require">
-                    Sex
+                    Sex {errorCheck.sexError && <span className='err-check-tip'>Required information cannot be empty</span>}
                   </div>
                   <div className="form-desc">
                     <Select 
+                      className={errorCheck.sexError && 'red-border'}
                       defaultValue={uInfo.sex || ''}
                       options={[
                         { value: 1, label: 'Male' },
@@ -884,10 +962,10 @@ function Home() {
 
                 <div className='my-form-item'>
                   <div className="form-title require">
-                    Bio
+                    Bio {errorCheck.bioError && <span className='err-check-tip'>Required information cannot be empty</span>}
                   </div>
                   <div className="form-desc">
-                    <Input.TextArea defaultValue={uInfo.intro} onChange={e => handleInputChange(e, 'intro')}/>
+                    <Input.TextArea className={errorCheck.bioError && 'red-border'} defaultValue={uInfo.intro} onChange={e => handleInputChange(e, 'intro')}/>
                   </div>
                 </div>
 
@@ -897,13 +975,13 @@ function Home() {
 
                 <div className='my-form-item'>
                   <div className="form-title require">
-                    Self-introduction
+                    Self-introduction {errorCheck.selfError && <span className='err-check-tip'>Required information cannot be empty</span>}
                   </div>
                   <div className='sub-tip-text'>
                     Use a few sentences to describe yourself in detail
                   </div>
                   <div className="form-desc">
-                    <Input.TextArea onChange={e => handleInputChange(e, 'self_introduction')} />
+                    <Input.TextArea className={errorCheck.selfError && 'red-border'} onChange={e => handleInputChange(e, 'self_introduction')} />
                   </div>
                 </div>
 
@@ -1070,8 +1148,8 @@ function Home() {
                       <circle cx="34" cy="8" r="8" fill="#FF4040"/>
                       <rect x="38.9365" y="7.20048" width="1.62073" height="9.72438" transform="rotate(90 38.9365 7.20048)" fill="white"/>
                     </svg>
-                    <div className="icon-close-btn can-click" onClick={handleChangeTwitterIconActive}></div>
-                  </> : <svg className='can-click' width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={getLoginUrl}>
+                    <div className="icon-close-btn can-click"></div>
+                  </> : <svg className='can-click' width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect width="40" height="40" rx="20" fill="#A0A7AF"/>
                   <path d="M13.375 29.5H10L26.625 10.5H30L13.375 29.5Z" fill="white"/>
                   <path d="M24.7403 28.75L11.0397 11.25H15.2597L28.9603 28.75H24.7403Z" fill="#A0A7AF" stroke="white"/>
