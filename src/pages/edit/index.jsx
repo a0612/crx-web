@@ -195,7 +195,7 @@ const getDays = (year, Month) => {
 function Home() {
 
   dataPicker.init()
-  const [step, setStep] = useState(2)
+  const [step, setStep] = useState(1)
   const [currentYear, setCurrentYear] = useState(dataPicker.today.getFullYear())
   const [currentMonth, setCurrentMonth] = useState('September')
   const [currentDay, setCurrentDay] = useState(24)
@@ -335,7 +335,7 @@ function Home() {
       console.log('拿到创建成功的机器人信息 === ', data)
       if (data?.bot_id) {
         setFinishData(data)
-        // setStep(3)
+        setStep(3)
       } else {
         setStep(1)
       }
