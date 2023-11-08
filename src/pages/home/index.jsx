@@ -23,7 +23,7 @@ function Home() {
     )
   }
 
-  return <div className="page-home">
+  return <div className="page-home-h5">
     <div className="page-left">
       <div className="header">
         <img src={Logo} alt="" className="logo-img" />

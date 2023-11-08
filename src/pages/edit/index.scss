@@ -15,6 +15,7 @@
     justify-content: space-between;
     padding: 0 60px;
     align-items: center;
+    z-index: 100;
     .crx-logo{
       height: 35px;
       width: auto;
@@ -95,7 +96,7 @@
     font-size: 14px;
     padding: 40px 60px;
     .process-box{
-      margin-bottom: 45px;
+      margin-bottom: 80px;
       .process-title{
         color: #000;
         font-family: Inter;
@@ -125,6 +126,9 @@
             .process-item-circle{
               background-color: #34D026;
               color: #fff;
+              img{
+                width: 27px;
+              }
             }
             .process-item-text{
               color: #000;
@@ -185,7 +189,7 @@
     }
     .step-2-container{
       position: relative;
-      height: 530px;
+      height: 330px;
       .tips-item{
         margin-top: 45px;
         width: 457px;
@@ -205,6 +209,7 @@
           font-style: normal;
           font-weight: 400;
           line-height: 20px; /* 142.857% */
+          white-space: nowrap;
         }
         .color-orange{
           color: #FF7B3A;
@@ -226,10 +231,15 @@
       }
     }
     .step-3-container{
-      height: 500px;
+      height: 400px;
       display: flex;
       align-items: center;
       flex-direction: column;
+      .finish-user-info{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
       .finish-user-avatar{
         width: 104px;
         height: 104px;
@@ -604,10 +614,27 @@
     >div{
       width: 100%;
     }
+    .input-container-edit{
+      font-size: 20px;
+      height: 48px;
+    }
+    .textarea-container-edit{
+      font-size: 20px;
+      line-height: 39px;
+      height: 88px;
+    }
     .red-border{
       border-color: red;
       >.ant-select-selector{
         border-color: red;
+      }
+    }
+    .select-after-icon{
+      width: 16px;
+      height: 16px;
+      img{
+        width: 100%;
+        height: 100%;
       }
     }
   }

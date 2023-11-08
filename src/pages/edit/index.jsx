@@ -2,12 +2,12 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import './index.scss'
 import Logo from '../../assets/img/logo.png'
 import duiIcon from '../../assets/img/dui.png'
+import FrameImg from '../../assets/img/Frame.png'
+import DuiGreen from '../../assets/img/dui-green.png'
 import { Form, Input, Select, Switch, message, Upload, Modal } from 'antd';
 import defaultIcon from "@/assets/img/default-icon.svg";
 import plus from "@/assets/img/plus.svg"
 import Tag from "./components/Tag";
-import headerIconLoadingImg from "@/assets/img/header-icon-loading.svg";
-import ellipsis from "@/assets/img/ellipsis.svg";
 import { useHistory, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import API from "@/api";
@@ -223,7 +223,7 @@ function Home() {
   const [imageUrl, setImageUrl] = useState('');
   const [clickFlag, setFlag] = useState(false);
 
-  const [twitterIconActive, setTwitterIconActive] = useState(false);
+  const [twitterIconActive, setTwitterIconActive] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [finishData, setFinishData] = useState({});
 
@@ -821,7 +821,9 @@ function Home() {
                 stepList.map(item => {
                   return <div className={`process-item${item.step <= step ? ' active' : ''}`} key={item.step}>
                   <div className="process-item-circle">
-                    {item.number}
+                    {
+                      item.step === step ? item.number : <img src={DuiGreen}/>
+                    }
                   </div>
                   <div className="process-item-text">
                     {item.font}
@@ -930,7 +932,7 @@ function Home() {
                     Name {errorCheck.nameError && <span className='err-check-tip'>Required information cannot be empty</span>}
                   </div>
                   <div className="form-desc">
-                    <Input className={errorCheck.nameError && 'red-border'} value={uInfo.nick_name} onChange={e => handleInputChange(e, 'nick_name')} />
+                    <Input className={errorCheck.nameError ? 'input-container-edit red-border' : 'input-container-edit'} value={uInfo.nick_name} onChange={e => handleInputChange(e, 'nick_name')} />
                   </div>
                 </div>
 
@@ -940,7 +942,7 @@ function Home() {
                   </div>
                   <div className="form-desc">
                     <Select 
-                      className={errorCheck.sexError && 'red-border'}
+                      className={errorCheck.sexError ? 'input-container-edit red-border' : 'input-container-edit'}
                       defaultValue={uInfo.sex || ''}
                       options={[
                         { value: 1, label: 'Male' },
@@ -956,6 +958,7 @@ function Home() {
                         infoFlag.sex = value
                         setUInfo(infoFlag)
                       }}
+                      suffixIcon={<div className='select-after-icon'><img src={FrameImg} /></div>}
                     />
                   </div>
                 </div>
@@ -965,7 +968,7 @@ function Home() {
                     Bio {errorCheck.bioError && <span className='err-check-tip'>Required information cannot be empty</span>}
                   </div>
                   <div className="form-desc">
-                    <Input.TextArea className={errorCheck.bioError && 'red-border'} defaultValue={uInfo.intro} onChange={e => handleInputChange(e, 'intro')}/>
+                    <Input.TextArea autoSize={{minRows: 2, maxRows: 2}} className={errorCheck.bioError ? 'textarea-container-edit red-border' : 'textarea-container-edit'} defaultValue={uInfo.intro} onChange={e => handleInputChange(e, 'intro')}/>
                   </div>
                 </div>
 
@@ -981,7 +984,7 @@ function Home() {
                     Use a few sentences to describe yourself in detail
                   </div>
                   <div className="form-desc">
-                    <Input.TextArea className={errorCheck.selfError && 'red-border'} onChange={e => handleInputChange(e, 'self_introduction')} />
+                    <Input.TextArea autoSize={{minRows: 2, maxRows: 2}} className={errorCheck.selfError ? 'textarea-container-edit red-border' : 'textarea-container-edit'} onChange={e => handleInputChange(e, 'self_introduction')} />
                   </div>
                 </div>
 
@@ -1025,7 +1028,7 @@ function Home() {
                     Location
                   </div>
                   <div className="form-desc">
-                    <Input defaultValue={uInfo.location} onChange={e => handleInputChange(e, 'location')}/>
+                    <Input className='input-container-edit' defaultValue={uInfo.location} onChange={e => handleInputChange(e, 'location')}/>
                   </div>
                 </div>
                 <div className="tip-text">
@@ -1137,7 +1140,7 @@ function Home() {
                 This will make <span className='color-orange'>{uInfo.name}</span> more like you. About data privacy <span className='color-green'>Policy</span>
               </div>
             </div>
-            <div style={{marginTop: '10px'}}>
+            <div style={{marginTop: '20px'}}>
               <div className="step-2-twitter">
                 {
                   twitterIconActive ? <>
@@ -1145,8 +1148,8 @@ function Home() {
                       <rect y="2" width="40" height="40" rx="20" fill="black"/>
                       <path d="M13.375 31.5H10L26.625 12.5H30L13.375 31.5Z" fill="white"/>
                       <path d="M24.7403 30.75L11.0397 13.25H15.2597L28.9603 30.75H24.7403Z" fill="black" stroke="white"/>
-                      <circle cx="34" cy="8" r="8" fill="#FF4040"/>
-                      <rect x="38.9365" y="7.20048" width="1.62073" height="9.72438" transform="rotate(90 38.9365 7.20048)" fill="white"/>
+                      {/* <circle cx="34" cy="8" r="8" fill="#FF4040"/> */}
+                      {/* <rect x="38.9365" y="7.20048" width="1.62073" height="9.72438" transform="rotate(90 38.9365 7.20048)" fill="white"/> */}
                     </svg>
                     <div className="icon-close-btn can-click"></div>
                   </> : <svg className='can-click' width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
