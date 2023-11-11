@@ -57,17 +57,17 @@ function Home() {
           <div className="step-font">
             <span>Step 2: </span>Please create a GROWN account and provide information for the social avatar.
           </div>
-          <div className="step-img">
+          {/* <div className="step-img">
             <img src={Step2Img} alt="" />
-          </div>
+          </div> */}
         </div>
         <div className="container-box">
           <div className="step-font">
             <span>Step 3: </span>Train through advanced settings and continuous data input to achieve a better social avatar.
           </div>
-          <div className="step-img">
+          {/* <div className="step-img">
             <img src={Step3Img} alt="" />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
