@@ -195,7 +195,7 @@ const getDays = (year, Month) => {
 function Home() {
 
   dataPicker.init()
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(3)
   const [currentYear, setCurrentYear] = useState(dataPicker.today.getFullYear())
   const [currentMonth, setCurrentMonth] = useState('September')
   const [currentDay, setCurrentDay] = useState(24)
@@ -205,7 +205,6 @@ function Home() {
   const select2Ref = useRef()
   const select3Ref = useRef()
   const select4Ref = useRef()
-  const userIconRef = useRef()
 
   const [canSave, setCanSave] = useState(false)
   const [expertiseTags, setExpertiseTags] = useState([])
@@ -222,6 +221,7 @@ function Home() {
   const [imgsList, setImgsList] = useState([defaultIcon]);
   const [imageUrl, setImageUrl] = useState('');
   const [clickFlag, setFlag] = useState(false);
+  const [times, setTimes] = useState(5);
 
   const [twitterIconActive, setTwitterIconActive] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -229,6 +229,16 @@ function Home() {
 
   const history = useHistory();
   const location = useLocation();
+
+  useEffect(() => {
+    if (step === 3 && times > 0) {
+      setTimeout(() => {
+        setTimes(times - 1)
+      }, 1000)
+    } else if (step === 3 && times < 1) {
+      linkToTwitter()
+    }
+  }, [step, times])
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -750,6 +760,10 @@ function Home() {
     }
   }
 
+  const linkToTwitter = () => {
+    window.location.href = 'https://twitter.com/'
+  }
+
   const customRequest = ({ file, onSuccess, onError }) => {
     // 在这里执行自定义上传逻辑，例如使用 Axios 或 Fetch 发送文件到服务器
     // 当上传成功或失败后，分别调用 onSuccess 或 onError 函数
@@ -1182,6 +1196,9 @@ function Home() {
                 <img src={duiIcon} alt="" />
               </div>
               Your social avatar has successfully gone live
+            </div>
+            <div className="button-link can-click" onClick={linkToTwitter}>
+              Enter Twitter ({times}s...)
             </div>
           </div>
         }
