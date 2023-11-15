@@ -195,7 +195,7 @@ const getDays = (year, Month) => {
 function Home() {
 
   dataPicker.init()
-  const [step, setStep] = useState(3)
+  const [step, setStep] = useState(1)
   const [currentYear, setCurrentYear] = useState(dataPicker.today.getFullYear())
   const [currentMonth, setCurrentMonth] = useState('September')
   const [currentDay, setCurrentDay] = useState(24)
@@ -317,7 +317,7 @@ function Home() {
   }
   const updateInfo = async () => {
     const res = await API.createBot({
-      allow_data_for_training: uInfo.allow_data_for_training,
+      allow_data_for_training: true,
       birthday: uInfo.birthday,
       expertises: uInfo.expertises,
       icon: uInfo.icon,
@@ -1143,7 +1143,7 @@ function Home() {
                 Using the data you generated in Grown
               </div>
               <div className="step-tip-content">
-                The content and social behaviors you generate in Grown will help <span className='color-orange'>{uInfo.name}</span> gradually master your skills.
+                The content and social behaviors you generate in Grown will help <span className='color-orange'>{uInfo.nick_name}</span> gradually master your skills.
               </div>
             </div>
             <div className="tips-item">
@@ -1151,7 +1151,7 @@ function Home() {
                 Link your social media and authorize use
               </div>
               <div className="step-tip-content">
-                This will make <span className='color-orange'>{uInfo.name}</span> more like you. About data privacy <span className='color-green'>Policy</span>
+                This will make <span className='color-orange'>{uInfo.nick_name}</span> more like you. About data privacy <span className='color-green'>Policy</span>
               </div>
             </div>
             <div style={{marginTop: '20px'}}>
