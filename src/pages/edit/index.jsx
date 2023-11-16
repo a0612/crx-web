@@ -379,6 +379,7 @@ function Home() {
       setImageUrl(data.icon)
       setUInfo({
         ...data,
+        allow_data_for_training: true
       })
       setCurUInfo({
         icon: data.icon,
