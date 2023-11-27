@@ -5,7 +5,7 @@ import Logo from '../../assets/img/logo.png'
 import TwitterIcon from '../../assets/img/x.png'
 import Step2Img from '../../assets/img/step2.png'
 import Step3Img from '../../assets/img/step3.png'
-// /*global chrome*/
+/*global chrome*/
 
 function Home() {
   // const [logged, setLogged] = useState(false)
@@ -15,6 +15,17 @@ function Home() {
   // }, [])
 
   const handleAgree = () => {
+    // chrome.permissions.request({
+    //   permissions: ['tabs', 'storage', 'scripting'],
+    //   origins: ['https://twitter.com/*']
+    // }, function(granted) {
+    //   if (granted) {
+    //     alert('Permission Granted');
+    //   } else {
+    //     alert('Permission Denied');
+    //   }
+    // });
+
     window.postMessage(
       {
         type: 'requestPermission',

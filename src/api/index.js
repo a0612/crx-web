@@ -1,7 +1,8 @@
 import request from './request'
 
 request.config({
-  baseURL: 'https://pre.wwttxx2.online',
+  // baseURL: 'https://pre.wwttxx2.online',
+  baseURL: 'https://server.grownapp.io',
 })
 
 
