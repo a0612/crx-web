@@ -777,7 +777,9 @@ function Home() {
     // 这里模拟一个上传成功
     const formData = new FormData();
     formData.append('file', file);
-    axios.post('https://pre.wwttxx2.online/app/file/upload', formData, {
+    // 'https://pre.wwttxx2.online/app/file/upload'
+    // 'https://server.grownapp.io'
+    axios.post('https://server.grownapp.io/app/file/upload', formData, {
       headers: {
         token: Cookies.get('token')
       }
@@ -863,7 +865,6 @@ function Home() {
           step === 1 ? (
             <div className="form-avatar-container">
               <div className='edit-user-icon can-click'>
-              {/* action="https://pre.wwttxx2.online/app/file/upload" */}
                 <Upload
                   accept="image/*"
                   customRequest={customRequest}
