@@ -221,6 +221,7 @@ function Home() {
   const [imgsList, setImgsList] = useState([defaultIcon]);
   const [imageUrl, setImageUrl] = useState('');
   const [clickFlag, setFlag] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const [times, setTimes] = useState(5);
 
   const [twitterIconActive, setTwitterIconActive] = useState(true);
@@ -306,6 +307,10 @@ function Home() {
           }
           break;
         case 2:
+          if (updating) {
+            return
+          }
+          setUpdating(true)
           updateInfo()
           break;
         default:
@@ -329,6 +334,7 @@ function Home() {
       sex: uInfo.sex
     })
     const {code, data} = res.data
+    setUpdating(false)
     if (code === 200) {
       console.log('创建成功 === ', data)
       // 跳转到finish步骤
